@@ -40181,6 +40181,8 @@ dissect_ieee80211_pv1(tvbuff_t *tvb, packet_info *pinfo _U_, proto_tree *tree,
   if (phdr->fcs_len == 4)
     len_no_fcs -= 4;
 
+  tvbuff_t next_tvb = tvb_new_subset_length_caplen(tvb,offset,len-offset,len)
+
   /* Now, handle the body */
   switch (type) {
   case PV1_QOS_DATA_1MAC:
@@ -40190,10 +40192,10 @@ dissect_ieee80211_pv1(tvbuff_t *tvb, packet_info *pinfo _U_, proto_tree *tree,
   case PV1_MANAGEMENT:
     ti = proto_tree_add_item(tree, hf_ieee80211_mgt, tvb, 0, -1, ENC_NA);
     mgt_tree = proto_item_add_subtree(ti, ett_80211_mgt);
-    offset = dissect_pv1_management(tvb, pinfo, mgt_tree, offset, phdr, subtype, len_no_fcs, fcf);
+    offset = dissect_pv1_management(next_tvb, pinfo, mgt_tree, offset, phdr, subtype, len_no_fcs, fcf);
     break;
   case PV1_CONTROL:
-    offset = dissect_pv1_control(tvb, pinfo, fc_tree, offset, phdr, subtype, len_no_fcs, fcf);
+    offset = dissect_pv1_control(next_tvb, pinfo, fc_tree, offset, phdr, subtype, len_no_fcs, fcf);
     break;
   default:
     /* Invalid so far. Insert as data and add an Expert Info */
