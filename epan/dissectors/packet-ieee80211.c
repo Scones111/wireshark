@@ -40181,7 +40181,7 @@ dissect_ieee80211_pv1(tvbuff_t *tvb, packet_info *pinfo _U_, proto_tree *tree,
   if (phdr->fcs_len == 4)
     len_no_fcs -= 4;
 
-  tvbuff_t next_tvb = tvb_new_subset_length_caplen(tvb,offset,len-offset,len)
+  tvbuff_t *next_tvb = tvb_new_subset_length_caplen(tvb,offset,len-offset,len);
 
   /* Now, handle the body */
   switch (type) {
